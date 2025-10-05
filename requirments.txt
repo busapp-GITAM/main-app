@@ -1,0 +1,10 @@
+
+Flask
+Werkzeug
+supabase
+python-dotenv
+psycopg2-binary
+postgrest
+realtime
+storage3
+gotrue
