@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+
+{% block title %}Register - Student Bus Booking{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="text-center mb-0">Student Registration</h3>
+            </div>
+            <div class="card-body">
+                <form method="POST">
+
+                    <div class="mb-3">
+                        <label for="name" class="form-label">Full Name *</label>
+                        <input type="text" class="form-control" name="name" id="name" placeholder="Enter your full name"
+                            required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="email" class="form-label">Email Address *</label>
+                        <input type="email" class="form-control" name="email" id="email"
+                            placeholder="your.email@college.edu" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="year" class="form-label">Year of Study *</label>
+                        <select class="form-select" name="year" id="year" required>
+                            <option value="" disabled selected>Select your year</option>
+                            <option value="1">1st Year</option>
+                            <option value="2">2nd Year</option>
+                            <option value="3">3rd Year</option>
+                            <option value="4">4th Year</option>
+                        </select>
+                    </div>
+
+
+                    <div class="mb-3">
+                        <label for="student_id" class="form-label">Student ID *</label>
+                        <input type="text" class="form-control" name="student_id" id="student_id"
+                            placeholder="e.g., 2024CS001" required>
+                        <small class="form-text text-muted">Your college student ID number</small>
+                    </div>
+                    <div class="mb-3">
+                        <label for="phone" class="form-label">Phone Number *</label>
+                        <input type="tel" class="form-control" name="phone" id="phone"
+                            placeholder="10-digit mobile number" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="password" class="form-label">Password *</label>
+                        <input type="password" class="form-control" name="password" id="password"
+                            placeholder="Create a strong password" required>
+                        
+                        <p>
+                            <small class="form-text text-muted">
+                                Password requirements:
+                                <ul class="mb-0">
+                                    <li>At least 8 characters</li>
+                                    <li>Must include at least one special character (e.g., @, #, $, %)</li>
+                                    <li>Must include at least one number</li>
+                                </ul>
+                            </small>
+                        </p>
+
+                    
+                    </div>
+
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-primary">Register</button>
+                    </div>
+
+                    <div class="text-center mt-3">
+                        <small>Already have an account? <a href="{{ url_for('login') }}">Login here</a></small>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

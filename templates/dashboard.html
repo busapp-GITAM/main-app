@@ -1,0 +1,152 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - Student Bus Booking{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <h2>Welcome! 👋</h2>
+        <p class="text-muted">Book your bus seats and manage your bookings</p>
+    </div>
+</div>
+
+<!-- Available Schedules -->
+<div class="row mt-4">
+    <div class="col-12">
+        <h4>📅 Available Bus Schedules</h4>
+        {% if schedules %}
+        <div class="table-responsive">
+            <table class="table table-striped">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Route</th>
+                        <th>Date</th>
+                        <th>Departure Time</th>
+                        <th>Bus Number</th>
+                        <th>Available Seats</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for schedule in schedules %}
+                    <tr>
+                        <td>
+                            <strong>{{ schedule.route_name }}</strong><br>
+                            <small class="text-muted">{{ schedule.start_point }} → {{ schedule.end_point }}</small>
+                        </td>
+                        <td>{{ schedule.departure_date }}</td>
+                        <td>{{ schedule.departure_time }}</td>
+                        <td>{{ schedule.bus_number }}</td>
+                        <td>
+                            <span
+                                class="badge {% if schedule.available_seats > 10 %}bg-success{% elif schedule.available_seats > 5 %}bg-warning{% else %}bg-danger{% endif %}">
+                                {{ schedule.available_seats }} seats
+                            </span>
+                        </td>
+                        <td>
+                            {% if schedule.available_seats > 0 %}
+                            <a href="{{ url_for('book_seat', schedule_id=schedule.schedule_id) }}"
+                                class="btn btn-primary btn-sm">Book Seat</a>
+                            {% else %}
+                            <button class="btn btn-secondary btn-sm" disabled>Full</button>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="alert alert-info">
+            <h5>No schedules available</h5>
+            <p>There are currently no bus schedules available for booking. Please check back later.</p>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Current Bookings -->
+<div class="row mt-5">
+    <div class="col-12">
+        <h4>🎫 Your Current Bookings</h4><br>
+        <h4> <b> Please take the Screenshot of your ticket.</b></h4>
+        {% if bookings %}
+        <div class="table-responsive">
+            <table class="table table-striped">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Route</th>
+                        <th>Date & Time</th>
+                        <th>Bus Number</th>
+                        <th>Seat Number</th>
+                        <th>Booked On</th>
+                        <th>Action</th>
+                        <th>e-Ticket</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for booking in bookings %}
+                    <tr>
+                        <td>{{ booking.route_name }}</td>
+                        <td>
+                            {{ booking.departure_date }}<br>
+                            <small>{{ booking.departure_time }}</small>
+                        </td>
+                        <td>{{ booking.bus_number }}</td>
+                        <td>
+                            <span class="badge bg-info">Seat {{ booking.seat_number }}</span>
+                        </td>
+                        <td>{{ booking.booking_time.split(' ')[0] }}</td>
+                        <td>
+                            <a href="{{ url_for('cancel_booking', booking_id=booking.booking_id) }}"
+                                class="btn btn-danger btn-sm"
+                                onclick="return confirm('Are you sure you want to cancel this booking?')">
+                                Cancel
+                            </a>
+                        </td>
+                        <td>
+                            <a href="{{ url_for('view_ticket', booking_id=booking.booking_id) }}" 
+       class="btn btn-info btn-sm me-1">
+       View Ticket
+    </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="alert alert-warning">
+            <h5>No Active Bookings</h5>
+            <p>You don't have any current bus bookings. Book a seat from the available schedules above.</p>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Quick Stats -->
+<div class="row mt-4">
+    <div class="col-md-6">
+        <div class="card bg-light">
+            <div class="card-body text-center">
+                <h5 class="card-title">📊 Your Stats</h5>
+                <p class="card-text">
+                    <strong>Active Bookings:</strong> {{ bookings|length }}<br>
+                    <strong>Available Schedules:</strong> {{ schedules|length }}
+                </p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card bg-light">
+            <div class="card-body text-center">
+                <h5 class="card-title">💡 Tips</h5>
+                <p class="card-text">
+                    • Book early for popular time slots<br>
+                    • Cancel at least 2 hours before departure<br>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

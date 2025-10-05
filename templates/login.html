@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+
+{% block title %}Login - Student Bus Booking{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="text-center mb-0">Student Login</h3>
+            </div>
+            <div class="card-body">
+                <form method="POST">
+                    <div class="mb-3">
+                        <label for="student_id" class="form-label">Student ID</label>
+                        <input type="text" class="form-control" name="student_id" id="student_id" placeholder="Enter your student ID" required>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="year" class="form-label">Year</label>
+                        <select class="form-control" name="year" id="year" required>
+                            <option value="">Select Year</option>
+                            <option value="1">1st Year</option>
+                            <option value="2">2nd Year</option>
+                            <option value="3">3rd Year</option>
+                            <option value="4">4th Year</option>
+                        </select>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="password" class="form-label">Password</label>
+                        <input type="password" class="form-control" name="password" id="password" placeholder="Enter your password" required>
+                    </div>
+                    
+                    <!-- CAPTCHA Section -->
+                    <div class="mb-3">
+                        <label for="captcha_answer" class="form-label">Security Check</label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-primary text-white fw-bold">
+                                What is {{ session.captcha_question }}?
+                            </span>
+                            <input type="number" class="form-control" name="captcha_answer" id="captcha_answer" placeholder="Enter answer" required>
+                        </div>
+                        <small class="text-muted">Please solve the simple math problem above</small>
+                    </div>
+                    
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-primary">Login</button>
+                    </div>
+                    
+                    <div class="text-center mt-3">
+                        <small>Don't have an account? <a href="{{ url_for('register') }}">Register here</a></small>
+                    </div>
+                </form>
+            </div>
+        </div>
+        
+        <!-- Demo credentials for testing -->
+        <div class="card mt-3">
+            <div class="card-body">
+                <h6 class="card-title">For Testing:</h6>
+                <small class="text-muted">
+                    After registering, use your student ID and password to login.
+                </small>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

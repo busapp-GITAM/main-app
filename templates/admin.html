@@ -1,0 +1,178 @@
+{% extends "base.html" %}
+
+{% block title %}Admin Panel - Bus Booking{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <h2>🔧 Admin Panel</h2>
+        <p class="text-muted">Manage bus schedules and view bookings</p>
+    </div>
+</div>
+
+<!-- Quick Stats -->
+<div class="row mt-4">
+    <div class="col-md-3">
+        <div class="card bg-primary text-white">
+            <div class="card-body text-center">
+                <h5>{{ bookings|length }}</h5>
+                <p class="mb-0">Today's Schedules</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card bg-success text-white">
+            <div class="card-body text-center">
+                <h5>{{ bookings|sum(attribute='booked_seats') or 0 }}</h5>
+                <p class="mb-0">Total Bookings</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card bg-warning text-white">
+            <div class="card-body text-center">
+                <h5>{{ bookings|sum(attribute='available_seats') or 0 }}</h5>
+                <p class="mb-0">Available Seats</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card bg-info text-white">
+            <div class="card-body text-center">
+                <h5>{{ (bookings|sum(attribute='booked_seats') or 0) / ((bookings|sum(attribute='booked_seats') or 0) +
+                    (bookings|sum(attribute='available_seats') or 1)) * 100 | round(1) }}%</h5>
+                <p class="mb-0">Occupancy Rate</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Today's Schedule Overview -->
+<div class="row mt-5">
+    <div class="col-12">
+        <h4>📊 Today's Bus Schedules</h4>
+        {% if bookings %}
+        <div class="table-responsive">
+            <table class="table table-striped">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Departure Time</th>
+                        <th>Bus Number</th>
+                        <th>Route</th>
+                        <th>Booked Seats</th>
+                        <th>Available Seats</th>
+                        <th>Occupancy</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for booking in bookings %}
+                    <tr>
+                        <td>
+                            <strong>{{ booking.departure_time }}</strong>
+                        </td>
+                        <td>{{ booking.bus_number }}</td>
+                        <td>{{ booking.route_name }}</td>
+                        <td>
+                            <span class="badge bg-primary">{{ booking.booked_seats or 0 }}</span>
+                        </td>
+                        <td>
+                            <span class="badge bg-success">{{ booking.available_seats }}</span>
+                        </td>
+                        <td>
+                            {% set total_capacity = (booking.booked_seats or 0) + booking.available_seats %}
+                            {% set occupancy = ((booking.booked_seats or 0) / total_capacity * 100) if total_capacity >
+                            0 else 0 %}
+                            <div class="progress" style="width: 100px;">
+                                <div class="progress-bar" style="width: 20%">{{ occupancy | round(0) }}%</div>
+                            </div>
+                        </td>
+                        <td>
+                            {% if booking.available_seats == 0 %}
+                            <span class="badge bg-danger">Full</span>
+                            {% elif (booking.booked_seats or 0) / ((booking.booked_seats or 0) +
+                            booking.available_seats) > 0.8 %}
+                            <span class="badge bg-warning">Almost Full</span>
+                            {% else %}
+                            <span class="badge bg-success">Available</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="alert alert-info">
+            <h5>No schedules for today</h5>
+            <p>There are no bus schedules configured for today.</p>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Quick Actions -->
+<div class="row mt-5">
+    <div class="col-12">
+        <h4>⚡ Quick Actions</h4>
+        <div class="row">
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-body text-center">
+                        <h5 class="card-title">➕ Add Schedule</h5>
+                        <p class="card-text">Add new bus schedules for upcoming days</p>
+                        <a href="{{ url_for('create_slot') }}" class="btn btn-primary">Add Schedule</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-body text-center">
+                        <h5 class="card-title">📋 View All Bookings</h5>
+                        <p class="card-text">See detailed booking reports and passenger lists</p>
+                        <td>
+                            <a href="{{ url_for('all_bookings', schedule_id=bookings.schedule_id) }}"
+                                class="btn btn-sm btn-info">View Bookings</a>
+                        </td>
+
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-body text-center">
+                        <h5 class="card-title">🚌 Manage Buses</h5>
+                        <p class="card-text">Add new buses or modify existing ones</p>
+                        <a href="{{url_for('manage_buses')}}" class="btn btn-primary">Manage Buses</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Emergency Actions -->
+<!-- <div class="row mt-4">
+    <div class="col-12">
+        <div class="card-body">
+             <p>Use these actions only in case of emergencies orbus breakdowns:</p> 
+
+            {% for booking in bookings %}
+            <div class="mb-2">
+                <strong>{{ booking.route_name }} ({{ booking.schedule_id }})</strong>
+                <form action="{{ url_for('cancel_schedule', schedule_id=booking.schedule_id) }}" method="POST"
+                    style="display:inline;">
+                    <button type="submit" class="btn btn-warning me-2">Cancel Schedule</button>
+                </form>
+
+                <form action="{{ url_for('manage_buses', schedule_id=booking.schedule_id) }}" method="POST"
+                    style="display:inline;">
+                    <button type="submit" class="btn btn-danger">Emergency Alert</button>
+                </form> -->
+<!-- </div> -->
+<!-- {% endfor %} -->
+<!-- </div> -->
+
+<!-- </div> -->
+<!--</div> -->
+{% endblock %}

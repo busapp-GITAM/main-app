@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block title %}Edit Schedule{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Edit Schedule</h2>
+    <form method="POST">
+        <div class="form-group mb-3">
+            <label>Bus Number</label>
+            <input type="text" name="bus_number" class="form-control" value="{{ bus['bus_number'] }}" required>
+        </div>
+        <div class="form-group mb-3">
+            <label>Route</label>
+            <input type="text" name="route" class="form-control" value="{{ bus['route'] }}" required>
+        </div>
+        <div class="form-group mb-3">
+            <label>Departure Time</label>
+            <input type="datetime-local" name="departure_time" class="form-control" value="{{ bus['departure_time'] }}" required>
+        </div>
+        <div class="form-group mb-3">
+            <label for="total_seats">Total Seats</label>
+            <input type="number" id="total_seats" name="total_seats" class="form-control" min="1" required>
+        </div>
+        <button type="submit" class="btn btn-success">Update</button>
+        <a href="{{ url_for('manage_buses') }}" class="btn btn-secondary">Cancel</a>
+    </form>
+    
+</div>
+
+{% endblock %}

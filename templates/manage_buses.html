@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% block title %}Manage Buses{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>🚌 Scheduled Buses</h2>
+    <table class="table table-bordered mt-3">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Bus Number</th>
+                <th>Route</th>
+                <th>Departure</th>
+                <th>Arrival</th>
+                <th>Total Seats</th>
+                <th>Available Seats</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for bus in buses %}
+            <tr>
+                <td>{{ bus['schedule_id'] }}</td>
+                <td>{{ bus['bus_number'] }}</td>
+                <td>{{ bus['route'] }}</td>
+                <td>{{ bus['departure_time'] }}</td>
+                <td>{{ bus['arrival_time'] }}</td>
+                <td>{{ bus['total_seats'] }}</td>
+                <td>{{ bus['available_seats'] }}</td>
+                <td>
+                    <a href="{{ url_for('edit_schedule', schedule_id=bus['schedule_id']) }}" class="btn btn-sm btn-primary">
+                        Edit
+                    </a>
+
+                    <!-- Cancel -->
+                    <form action="{{ url_for('cancel_schedule', schedule_id=bus['schedule_id']) }}" method="POST" style="display:inline;">
+                        <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure you want to cancel this schedule?')">
+                            Cancel
+                        </button>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+
+    </table>
+    <a href="{{ url_for('admin_panel') }}" class="btn btn-secondary">⬅ Back to Admin Panel</a>
+</div>
+{% endblock %}

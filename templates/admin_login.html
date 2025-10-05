@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+
+{% block title %}Admin Login - Bus Booking System{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card border-warning">
+            <div class="card-header bg-warning">
+                <h3 class="text-center mb-0">🔐 Admin Login</h3>
+            </div>
+            <div class="card-body">
+                <form method="POST">
+                    <div class="mb-3">
+                        <label for="username" class="form-label">Admin Username</label>
+                        <input type="text" class="form-control" name="username" id="username" placeholder="Enter admin username" required>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="password" class="form-label">Password</label>
+                        <input type="password" class="form-control" name="password" id="password" placeholder="Enter password" required>
+                    </div>
+                    
+                    <!-- CAPTCHA Section -->
+                    <div class="mb-3">
+                        <label for="captcha_answer" class="form-label">Security Check</label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-warning fw-bold">
+                                {{ session.captcha_question }}?
+                            </span>
+                            <input type="number" class="form-control" name="captcha_answer" id="captcha_answer" placeholder="Enter answer" required>
+                        </div>
+                        <small class="text-muted">Please solve the simple math problem above</small>
+                    </div>
+                    
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-warning">Login as Admin</button>
+                    </div>
+                    
+                    <div class="text-center mt-3">
+                        <small>Don't have admin access? <a href="{{ url_for('admin_reg') }}">Register here</a></small>
+                        <br>
+                        <small><a href="{{ url_for('index') }}">← Back to Home</a></small>
+                    </div>
+                </form>
+            </div>
+        </div>
+        
+        <div class="alert alert-info mt-3">
+            <strong>🔒 Admin Access Only</strong><br>
+            This area is restricted to authorized bus operators and administrators only.
+        </div>
+    </div>
+</div>
+{% endblock %}

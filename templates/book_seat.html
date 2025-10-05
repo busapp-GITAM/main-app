@@ -1,0 +1,189 @@
+{% extends "base.html" %}
+
+{% block title %}Book Seat - Student Bus Booking{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-lg-8 mx-auto">
+        <!-- Trip Details -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <h4 class="mb-0">🚌 Trip Details</h4>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <p><strong>Route:</strong> {{ schedule.route_name }}</p>
+                        <p><strong>From:</strong> {{ schedule.start_point }}</p>
+                        <p><strong>To:</strong> {{ schedule.end_point }}</p>
+                    </div>
+                    <div class="col-md-6">
+                        <p><strong>Date:</strong> {{ schedule.departure_date }}</p>
+                        <p><strong>Departure:</strong> {{ schedule.departure_time }}</p>
+                        <p><strong>Bus:</strong> {{ schedule.bus_number }}</p>
+                    </div>
+                </div>
+                <div class="alert alert-info">
+                    <strong>Available Seats:</strong> {{ schedule.available_seats }} out of {{ schedule.capacity }}
+                </div>
+            </div>
+        </div>
+
+        <!-- Seat Selection -->
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">Select Your Seat</h5>
+            </div>
+            <div class="card-body">
+                <form method="POST" action="{{ url_for('confirm_booking') }}">
+                    <input type="hidden" name="schedule_id" value="{{ schedule.schedule_id }}">
+                    
+                    <!-- Seat Map -->
+                    <div class="text-center mb-4">
+                        <h6>🚌 Bus Layout (Driver in Front)</h6>
+                        <div class="seat-map mx-auto" style="max-width: 400px;">
+                            <!-- Driver seat -->
+                            <div class="row mb-3">
+                                <div class="col-6">
+                                    <div class="seat-driver p-2 text-center bg-secondary text-white rounded">
+                                        🚗 Driver
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Passenger seats -->
+                            <div class="seat-grid">
+                                {% for seat_num in range(1, schedule.capacity + 1) %}
+                                    {% if seat_num in available_seats %}
+                                        <div class="seat available" data-seat="{{ seat_num }}">
+                                            {{ seat_num }}
+                                        </div>
+                                    {% else %}
+                                        <div class="seat booked" title="Seat {{ seat_num }} is already booked">
+                                            {{ seat_num }}
+                                        </div>
+                                    {% endif %}
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Legend -->
+                    <div class="row text-center mb-4">
+                        <div class="col-4">
+                            <div class="seat available d-inline-block me-2" style="width: 40px; height: 40px; line-height: 40px;">✓</div>
+                            <br><small>Available</small>
+                        </div>
+                        <div class="col-4">
+                            <div class="seat booked d-inline-block me-2" style="width: 40px; height: 40px; line-height: 40px;">✗</div>
+                            <br><small>Booked</small>
+                        </div>
+                        <div class="col-4">
+                            <div class="seat selected d-inline-block me-2" style="width: 40px; height: 40px; line-height: 40px;">★</div>
+                            <br><small>Selected</small>
+                        </div>
+                    </div>
+
+                    <!-- Selected seat display -->
+                    <div class="alert alert-warning text-center" id="seat-selection" style="display: none;">
+                        <strong>Selected Seat: </strong><span id="selected-seat-num">None</span>
+                    </div>
+
+                    <input type="hidden" name="seat_number" id="seat_number" required>
+                    
+                    <!-- Booking buttons -->
+                    <div class="row">
+                        <div class="col-6">
+                            <a href="{{ url_for('dashboard') }}" class="btn btn-secondary w-100">← Back to Dashboard</a>
+                        </div>
+                        <div class="col-6">
+                            <button type="submit" class="btn btn-success w-100" id="confirm-btn" disabled>
+                                Confirm Booking
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.seat-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+    margin: 0 auto;
+    max-width: 300px;
+}
+
+.seat {
+    padding: 12px 8px;
+    text-align: center;
+    border: 2px solid #ddd;
+    cursor: pointer;
+    background-color: #28a745;
+    color: white;
+    border-radius: 5px;
+    font-weight: bold;
+    transition: all 0.3s ease;
+    min-height: 45px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.seat.available:hover {
+    background-color: #218838;
+    transform: scale(1.05);
+}
+
+.seat.booked {
+    background-color: #dc3545;
+    cursor: not-allowed;
+    opacity: 0.7;
+}
+
+.seat.booked:hover {
+    transform: none;
+}
+
+.seat.selected {
+    background-color: #007bff;
+    border-color: #0056b3;
+    transform: scale(1.1);
+}
+
+.seat-driver {
+    border-radius: 10px;
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const seats = document.querySelectorAll('.seat.available');
+    const seatNumberInput = document.getElementById('seat_number');
+    const selectedSeatDisplay = document.getElementById('selected-seat-num');
+    const seatSelection = document.getElementById('seat-selection');
+    const confirmBtn = document.getElementById('confirm-btn');
+    
+    seats.forEach(seat => {
+        seat.addEventListener('click', function() {
+            document.querySelectorAll('.seat.selected').forEach(s => {
+                s.classList.remove('selected');
+                s.classList.add('available');
+            });
+            
+            this.classList.remove('available');
+            this.classList.add('selected');
+            
+            const seatNum = this.getAttribute('data-seat');
+            seatNumberInput.value = seatNum;
+            selectedSeatDisplay.textContent = seatNum;
+            seatSelection.style.display = 'block';
+            confirmBtn.disabled = false;
+        });
+    });
+});
+</script>
+{% endblock %}

@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+
+{% block title %}Student Bus Booking System{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-lg-8 mx-auto text-center">
+        <div class="jumbotron bg-white p-5 rounded shadow-sm">
+            <h1 class="display-4">🚌 Student Bus Booking</h1>
+            <p class="lead">Book your bus seats in advance and avoid overcrowding!</p>
+            <hr class="my-4">
+            <p>No more waiting in long queues or worrying about getting a seat. Book your return journey from college to your destination with just a few clicks.</p>
+            
+            {% if not session.user_id %}
+                <div class="mt-4">
+                    <a class="btn btn-primary btn-lg me-3" href="{{ url_for('register') }}" role="button">Register</a>
+                    <a class="btn btn-outline-primary btn-lg" href="{{ url_for('login') }}" role="button">Login</a><br>
+                    <a class="btn btn-primary btn-lg me-3" href="{{ url_for('admin_reg') }}" role="button"> Admin Register</a> 
+                    <a class="btn btn-outline-primary btn-lg" href="{{ url_for('admin_login') }}" role="button">Admin Login</a> 
+
+                </div>
+            {% else %}
+                <div class="mt-4">
+                    <a class="btn btn-success btn-lg" href="{{ url_for('dashboard') }}" role="button">Go to Dashboard</a>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<div class="row mt-5">
+    <div class="col-md-4">
+        <div class="card h-100">
+            <div class="card-body text-center">
+                <h5 class="card-title">📅 Easy Booking</h5>
+                <p class="card-text">Select your preferred time and book seats in advance for your return journey.</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card h-100">
+            <div class="card-body text-center">
+                <h5 class="card-title">🎫 Guaranteed Seat</h5>
+                <p class="card-text">No more overcrowding! Your booked seat is guaranteed and reserved for you.</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card h-100">
+            <div class="card-body text-center">
+                <h5 class="card-title">📱 Mobile Friendly</h5>
+                <p class="card-text">Book from anywhere - your hostel room, library, or while walking to the bus stop.</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
