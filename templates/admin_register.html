@@ -37,10 +37,19 @@
                                placeholder="10-digit mobile number" required>
                     </div>
 
-                    <div class="mb-3">
+                    <div class="mb-3 position-relative">
                         <label for="admin_password" class="form-label">Password *</label>
-                        <input type="password" class="form-control" name="admin_password" id="admin_password" 
-                               placeholder="Create a strong password" required>
+                        <input type="password" class="form-control" name="admin_password" id="admin_password"
+                            placeholder="Create a strong password" required>
+
+                        <!-- Show Password Checkbox -->
+                        <div class="form-check mt-2">
+                            <input class="form-check-input" type="checkbox" id="showAdminPassword">
+                            <label class="form-check-label" for="showAdminPassword">
+                                Show Password
+                            </label>
+                        </div>
+
                         <p>
                             <small class="form-text text-muted">
                                 Password requirements:
@@ -53,12 +62,20 @@
                         </p>
                     </div>
 
+                    <script>
+                        const adminPasswordInput = document.getElementById('admin_password');
+                        const showAdminPassword = document.getElementById('showAdminPassword');
+
+                        showAdminPassword.addEventListener('change', () => {
+                            adminPasswordInput.type = showAdminPassword.checked ? 'text' : 'password';
+                        });
+                    </script>
                     <div class="d-grid gap-2">
                         <button type="submit" class="btn btn-success">Register as Admin</button>
                     </div>
 
                     <div class="text-center mt-3">
-                        <small>Already registered? <a href="{{ url_for('login') }}">Login here</a></small>
+                        <small>Already registered? <a href="{{ url_for('admin_login') }}">Login here</a></small>
                     </div>
                 </form>
             </div>
@@ -66,3 +83,4 @@
     </div>
 </div>
 {% endblock %}
+
