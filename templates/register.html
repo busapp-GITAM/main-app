@@ -47,11 +47,23 @@
                             placeholder="10-digit mobile number" required>
                     </div>
 
-                    <div class="mb-3">
-                        <label for="password" class="form-label">Password *</label>
+                    <div class="mb-3 position-relative">
+                        <label for="password" class="form-label">Password</label>
                         <input type="password" class="form-control" name="password" id="password"
-                            placeholder="Create a strong password" required>
-                        
+                            placeholder="Enter your password" required>
+                        <!-- Toggle checkbox -->
+                        <input type="checkbox" id="showPassword" style="margin-top: 10px;">
+                        <label for="showPassword" style="margin-left: 5px; font-weight: normal;">Show Password</label>
+                    </div>
+
+                    <script>
+                        const passwordInput = document.getElementById('password');
+                        const showPassword = document.getElementById('showPassword');
+
+                        showPassword.addEventListener('change', () => {
+                            passwordInput.type = showPassword.checked ? 'text' : 'password';
+                        });
+                    </script>
                         <p>
                             <small class="form-text text-muted">
                                 Password requirements:
@@ -78,4 +90,5 @@
         </div>
     </div>
 </div>
+
 {% endblock %}
