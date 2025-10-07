@@ -17,28 +17,27 @@
                     </div>
                     
                     <div class="mb-3 position-relative">
-                        <label for="admin_password" class="form-label">Password *</label>
-                        <input type="password" class="form-control" name="admin_password" id="admin_password"
-                            placeholder="Create a strong password" required>
+    <label for="admin_password" class="form-label">Password</label>
+    <input type="password" class="form-control" name="password" id="admin_password"
+        placeholder="Enter your password" required>
 
-                        <!-- Show Password Checkbox -->
-                        <div class="form-check mt-2">
-                            <input class="form-check-input" type="checkbox" id="showAdminPassword">
-                            <label class="form-check-label" for="showAdminPassword">
-                                Show Password
-                            </label>
-                        </div>
+    <!-- Show Password Checkbox -->
+    <div class="form-check mt-2">
+        <input class="form-check-input" type="checkbox" id="showAdminPassword">
+        <label class="form-check-label" for="showAdminPassword">
+            Show Password
+        </label>
+    </div>
+</div>
 
-                    </div>
+<script>
+    const adminPasswordInput = document.getElementById('admin_password');
+    const showAdminPassword = document.getElementById('showAdminPassword');
 
-                    <script>
-                        const adminPasswordInput = document.getElementById('admin_password');
-                        const showAdminPassword = document.getElementById('showAdminPassword');
-
-                        showAdminPassword.addEventListener('change', () => {
-                            adminPasswordInput.type = showAdminPassword.checked ? 'text' : 'password';
-                        });
-                    </script>
+    showAdminPassword.addEventListener('change', () => {
+        adminPasswordInput.type = showAdminPassword.checked ? 'text' : 'password';
+    });
+</script>
                     
                     <!-- CAPTCHA Section -->
                     <div class="mb-3">
@@ -73,3 +72,4 @@
 </div>
 
 {% endblock %}
+
